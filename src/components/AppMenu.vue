@@ -1,7 +1,7 @@
 <template>
   <div class="app-menu">
-    <div class="app-menu__list" v-if="arrayStations">
-      <div class="app-menu__item" v-for="(item, index) in arrayStations" :key="index">
+    <div class="app-menu__list" v-if="stations">
+      <div class="app-menu__item" @click="rrr()" v-for="item in stations" :key="item.order">
         <div class="app-menu__item-thumb" :style="{backgroundColor: '#' + item.hex_color}"></div>
         <div class="app-menu__item-title" v-html="item.name" v-if="item.name"></div>
       </div>
@@ -25,9 +25,14 @@ export default {
     }
   },
   computed: { 
-    arrayStations() {
+    stations() {
       return this.$store.getters['getLocationsWithBranchColor']
-    }
+    },
+  },
+  methods: {
+  },
+  mounted() {
+    
   }
 }
 </script>

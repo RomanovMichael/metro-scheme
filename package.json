@@ -5,15 +5,15 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "core-js": "^3.8.3",
     "mapbox-gl": "^2.15.0",
     "vue": "^2.6.14",
-    "vuex": "^3.6.2",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

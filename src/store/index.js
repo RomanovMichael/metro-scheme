@@ -5,8 +5,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    locations: null
+    locations: null,
   },
+
+
   actions: {
     async getLocations({commit}) {
       return new Promise(function(resolve, reject) {
@@ -31,19 +33,30 @@ export default new Vuex.Store({
   },
   getters: {
     getLocationsWithBranchColor(state) {
+     if(state.locations == null) { return }
+     
+     // eslint-disable-next-line
+      let newArr = state.locations.reduce((accumulator, currentBranch, index) => {
 
-      if(state.locations == null) { return }
+        let modStations = currentBranch.stations.map(station =>  {
+          return { ...station, hex_color: currentBranch.hex_color, order: index + 1}
+        })
 
-      let locationsWithBranchColor = state.locations.map( function(branch) {
+        return accumulator.concat(modStations)
+      }, [])
 
-        const newStations = branch.stations.map(station => {
-          return { ...station, hex_color : branch.hex_color }
+      const newArrSorted = newArr.sort((a, b) => {
+
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1;
+        }
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1;
+        }
+        return 0;
         });
 
-        return newStations
-
-      })
-      return locationsWithBranchColor.flat()
-    }
+      return newArrSorted
+     }
   }
 })
