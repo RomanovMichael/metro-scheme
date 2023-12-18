@@ -1,9 +1,12 @@
 <template>
   <div class="app-menu">
+    <div class="app-menu__search-wrap">
+      <input v-model="filterValue" type="text" class="app-menu__search">
+    </div>
     <div class="app-menu__list" v-if="stations">
-      <div class="app-menu__item" @click="rrr()" v-for="item in stations" :key="item.order">
-        <div class="app-menu__item-thumb" :style="{backgroundColor: '#' + item.hex_color}"></div>
-        <div class="app-menu__item-title" v-html="item.name" v-if="item.name"></div>
+      <div class="app-menu__item" v-for="(item,index) in stations" :key="index">
+            <div class="app-menu__item-thumb" :style="{backgroundColor: item.properties.color}"></div>
+            <div class="app-menu__item-title" v-html="item.properties.name" v-if="item.properties.name"></div>
       </div>
     </div>
   </div>
@@ -21,19 +24,23 @@ export default {
   },
   data() {
     return { 
-      // foo: ''
+      fdfsf: 'dfdsf',
+      filterValue: '',
+      myStations: [],
+    }
+  },
+  watch: {
+    filterValue: {
+      handler() {
+        this.$store.commit('UPDATE_SEARCH', this.filterValue);
+      }
     }
   },
   computed: { 
     stations() {
-      return this.$store.getters['getLocationsWithBranchColor']
+      return this.$store.getters['getStationsWithBranchColor']
     },
   },
-  methods: {
-  },
-  mounted() {
-    
-  }
 }
 </script>
 
@@ -45,6 +52,7 @@ export default {
   background-color: white;
   flex-shrink: 0;
   overflow: scroll;
+  padding-top: 2rem;
 }
 .app-menu__list {
   min-height: 100vh;
@@ -72,5 +80,13 @@ export default {
   /* background-color: red; */
 }
 
+.app-menu__search-wrap {
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.app-menu__search {
+  width: 100%;
+}
 
 </style>

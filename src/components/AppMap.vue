@@ -1,77 +1,79 @@
 <template>
-  <div class="app-map" id="map" @click="renderPlacemarks()"></div>
+  <div class="app-map" id="map" ></div>
 </template>
 
 <script>
-
-import mapboxgl from '!mapbox-gl'; 
-
+import mapboxgl from "!mapbox-gl";
 
 export default {
-  name: 'AppMap',
+  name: "AppMap",
   props: {
-    msg: String
+    msg: String,
   },
   data() {
-    return { 
+    return {
       accessToken: process.env.VUE_APP_MAP_ACCESS_TOKEN,
-      map:null
-    }
+      map: null,
+      myPoints: {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
+      },
+    };
+  },
+  watch: {
+    '$store.state.search': function () { 
+      this.map.setFilter('points',['in', this.$store.state.search.toLowerCase(), ['get', 'name']])
+     }
   },
   computed: {
     arrayStations() {
-      return this.$store.getters['getLocationsWithBranchColor']
-    }
+      return this.$store.getters["getStationsWithBranchColor"];
+    },
   },
   methods: {
+    trimArray() {
+      this.map.setFilter('points',['in', 'bal', ['get', 'name']])
+    },
     initMap() {
-      mapboxgl.accessToken = this.accessToken;
-
+      mapboxgl.accessToken = this.accessToken
       this.map = new mapboxgl.Map({
-      container: "map",
-
-      style: "mapbox://styles/mapbox/satellite-streets-v11",
-      center: [37.617698, 55.755864],
-      zoom: 11,
-      projection: 'globe'
+        container: "map",
+        style: "mapbox://styles/mapbox/dark-v10",
+        center: [37.617698, 55.755864],
+        zoom: 11,
+        projection: "globe",
       });
     },
-    renderPlacemarks() {
-      // this.arrayStations.forEach(station => {
-
-      //   new mapboxgl.Marker()
-      //   .setLngLat([station.lng, station.lat])
-      //   .addTo(this.map)
-      // });
-      new mapboxgl.Marker()
-      .setLngLat([37.617698, 55.755864])
-      .addTo(this.map);
-    }
   },
   async mounted() {
-    this.initMap()
+    await this.$store.dispatch("getBranches");
+    this.myPoints.data.features = this.arrayStations;
+    this.initMap();
 
-    this.map.on('load', async () => {
-      this.map.setFog({})
-      await this.$store.dispatch('getLocations')
+    this.map.on("load", async () => {
+      this.map.setFog({});
 
-
-      // добавить данные на карту
-      // console.log('добавить данные на карту') 
-
-    
-    
-
-      // this.renderPlacemarks()
-
-    })
-
-
-      //  this.renderPlacemarks()
-      //  console.log('добавил метку')
-
+      this.map.addSource("points", this.myPoints);
+      this.map.addLayer({
+        id: "points",
+        type: "circle",
+        source: "points",
+        layout: {},
+        paint: {
+          "circle-color":["get", "color"],
+          "circle-radius": 10,
+        },
+      });
+    });
   },
-}
+  unmounted() {
+    this.map.remove();
+    this.map = null;
+  },
+};
 </script>
 
 <style>
@@ -80,3 +82,6 @@ export default {
   flex: 1;
 }
 </style>
+
+
+
