@@ -7,9 +7,15 @@ export default new Vuex.Store({
   state: {
     branches: null,
     enableFilter: false,
-    search: ''
+    search: '',
+    popup: {
+      isOpen: false
+    }
   },
   actions: {
+    popupUpdate(commit, isPopup) {
+      this.commit('POPUP_UPDATE', isPopup);
+    },
     async getBranches({ commit }) {
       return new Promise((resolve, reject) => {
         fetch('./content/branches.json')
@@ -31,7 +37,10 @@ export default new Vuex.Store({
     },
     UPDATE_SEARCH(state, data) {
       state.search = data
-    }
+    },
+    POPUP_UPDATE(state, data) {
+      state.popup = data
+    },
   },
   getters: {
     getStationsWithBranchColor(state) {
@@ -83,21 +92,6 @@ export default new Vuex.Store({
       }
 
       return sortedStations()
-
-
-      // const sortedStationsWithBranchColor = stationsWithBranchColor.sort((a, b) => {
-      //   if (a.properties.name.toLowerCase() < b.properties.name.toLowerCase()) {
-      //     return -1;
-      //   }
-      //   if (a.properties.name.toLowerCase() > b.properties.name.toLowerCase()) {
-      //     return 1;
-      //   }
-      //   return 0;
-      // });
-
-      // return sortedStationsWithBranchColor
-
-
-    }
+    },
   }
 })

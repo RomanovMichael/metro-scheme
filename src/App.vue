@@ -3,18 +3,21 @@
   <div class="app" id="app">
     <AppMenu />
     <AppMap />
+    <AppPopup v-if="$store.state.popup.isOpen"/>
   </div>
 </template>
 
 <script>
 import AppMap from './components/AppMap.vue'
 import AppMenu from './components/AppMenu.vue'
+import AppPopup from './components/AppPopup.vue'
 
 export default {
   name: 'App',
   components: {
     AppMap,
-    AppMenu
+    AppMenu,
+    AppPopup
   } 
 }
 </script>
@@ -31,5 +34,9 @@ export default {
 .app {
   display: flex;
   flex-wrap: nowrap;
+}
+
+.no-scroll {
+  overflow: hidden;
 }
 </style>

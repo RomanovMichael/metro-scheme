@@ -1,51 +1,60 @@
 <template>
   <div class="app-menu">
     <div class="app-menu__search-wrap">
-      <input v-model="filterValue" type="text" class="app-menu__search">
+      <input type="text" @input="updateFilterValue" class="app-menu__search" />
     </div>
     <div class="app-menu__list" v-if="stations">
-      <div class="app-menu__item" v-for="(item,index) in stations" :key="index">
-            <div class="app-menu__item-thumb" :style="{backgroundColor: item.properties.color}"></div>
-            <div class="app-menu__item-title" v-html="item.properties.name" v-if="item.properties.name"></div>
+      <div
+        class="app-menu__item"
+        v-for="(item, index) in stations"
+        :key="index"
+      >
+        <div
+          class="app-menu__item-thumb"
+          :style="{ backgroundColor: item.properties.color }"
+        ></div>
+        <div
+          class="app-menu__item-title"
+          v-html="item.properties.name"
+          v-if="item.properties.name"
+        ></div>
+        <a href="#" @click.prevent="openPopup(item)" class="app-menu__item-clicker"></a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
-
-
-
 export default {
-  name: 'AppMenu',
+  name: "AppMenu",
   props: {
-    msg: String
+    msg: String,
   },
   data() {
-    return { 
-      fdfsf: 'dfdsf',
-      filterValue: '',
+    return {
       myStations: [],
-    }
+    };
   },
-  watch: {
-    filterValue: {
-      handler() {
-        this.$store.commit('UPDATE_SEARCH', this.filterValue);
-      }
-    }
-  },
-  computed: { 
-    stations() {
-      return this.$store.getters['getStationsWithBranchColor']
+  methods: {
+    openPopup(item) {
+      this.$store.dispatch('popupUpdate', {
+        isOpen: true,
+        content: {...item}
+      });
+    },
+    updateFilterValue(e) {
+      this.$store.commit("UPDATE_SEARCH", e.target.value);
     },
   },
-}
+  computed: {
+    stations() {
+      return this.$store.getters["getStationsWithBranchColor"];
+    },
+  },
+};
 </script>
 
 <style>
-
 .app-menu {
   height: 100vh;
   width: 25rem;
@@ -57,7 +66,6 @@ export default {
 .app-menu__list {
   min-height: 100vh;
   padding: 0 2rem;
-
 }
 
 .app-menu__item {
@@ -70,8 +78,7 @@ export default {
 }
 
 .app-menu__item:hover .app-menu__item-title {
-
-} 
+}
 
 .app-menu__item-thumb {
   width: 1.5rem;
@@ -89,4 +96,15 @@ export default {
   width: 100%;
 }
 
+.app-menu__item {
+  position: relative;
+}
+
+.app-menu__item-clicker {
+  position: absolute;
+  top: 0;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
 </style>
